@@ -231,16 +231,7 @@ The goal is not simply to display charts.
 
 ShopSense turns raw e-commerce data into actionable business decisions.
 
-▶️ How to Run the Project
-1. Clone the Repository
-git clone YOUR_GITHUB_REPOSITORY_URL
-2. Open the Project
-cd ShopSense-Analytics
-3. Install Dependencies
-pip install -r requirements.txt
-4. Run the Dashboard
-cd dashboard
-streamlit run app.py
+
 5. Open the Application
 
 Streamlit will provide a local URL similar to:
