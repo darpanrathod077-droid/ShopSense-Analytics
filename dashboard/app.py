@@ -60,6 +60,14 @@ st.markdown(
         border: 1px solid #e5e7eb;
     }
 
+    .validation-box {
+        padding: 16px 18px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+    }
+
     </style>
     """,
     unsafe_allow_html=True
@@ -127,19 +135,18 @@ def clean_data(data):
     data = data.drop_duplicates()
 
     # Clean column names
-    data.columns = (
-        data.columns
-        .str.strip()
-    )
+    data.columns = data.columns.str.strip()
 
     # Required date columns
     if "Order Date" in data.columns:
+
         data["Order Date"] = pd.to_datetime(
             data["Order Date"],
             errors="coerce"
         )
 
     if "Ship Date" in data.columns:
+
         data["Ship Date"] = pd.to_datetime(
             data["Ship Date"],
             errors="coerce"
@@ -163,7 +170,7 @@ def clean_data(data):
                 errors="coerce"
             )
 
-    # Remove rows where critical business fields are missing
+    # Required business fields
     critical_columns = [
         "Sales",
         "Profit",
@@ -171,16 +178,9 @@ def clean_data(data):
         "Customer ID"
     ]
 
-    existing_critical = [
-        column
-        for column in critical_columns
-        if column in data.columns
-    ]
-
-    if existing_critical:
-        data = data.dropna(
-            subset=existing_critical
-        )
+    data = data.dropna(
+        subset=critical_columns
+    )
 
     # Fill non-critical text columns
     text_columns = data.select_dtypes(
@@ -197,7 +197,7 @@ def clean_data(data):
 
 
 # =========================================================
-# MAIN APP
+# MAIN APP - NO FILE
 # =========================================================
 
 if uploaded_file is None:
@@ -218,6 +218,13 @@ if uploaded_file is None:
         - 👥 Customer segmentation
         - ⚠️ Loss-making product detection
         - 💡 Automatic business recommendations
+
+        ### 📁 Supported Data
+
+        ShopSense is designed for **e-commerce and sales transaction
+        datasets** containing fields such as:
+
+        `Order ID`, `Customer ID`, `Order Date`, `Sales`, and `Profit`.
         """
     )
 
@@ -235,17 +242,28 @@ try:
         encoding="latin1"
     )
 
-except Exception as error:
+except Exception:
 
     st.error(
         "❌ Unable to read this CSV file."
     )
 
     st.warning(
-        "Please make sure the uploaded file is a valid CSV."
+        "Please make sure the uploaded file is a valid CSV file."
     )
 
     st.stop()
+
+
+# =========================================================
+# CLEAN COLUMN NAMES FOR VALIDATION
+# =========================================================
+
+df.columns = (
+    df.columns
+    .astype(str)
+    .str.strip()
+)
 
 
 # =========================================================
@@ -266,23 +284,88 @@ missing_columns = [
     if column not in df.columns
 ]
 
+
+# =========================================================
+# COMPATIBILITY CHECK
+# =========================================================
+
 if missing_columns:
 
     st.error(
-        "❌ This dataset is missing required columns."
+        "❌ This dataset is not compatible with ShopSense."
     )
 
-    st.write(
-        "Missing columns:"
+    st.markdown(
+        """
+        <div class="validation-box">
+
+        <b>ShopSense is designed for e-commerce sales datasets.</b>
+
+        <br><br>
+
+        The uploaded CSV does not contain all required business fields.
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.write(missing_columns)
+    st.subheader("⚠️ Missing Required Fields")
+
+    for column in missing_columns:
+
+        st.write(f"❌ {column}")
+
+    st.divider()
+
+    st.subheader("📋 Required Dataset Structure")
+
+    required_table = pd.DataFrame(
+        {
+            "Required Field": required_columns,
+            "Purpose": [
+                "Identify each order",
+                "Identify customers",
+                "Analyze sales trends",
+                "Calculate revenue",
+                "Calculate profitability"
+            ]
+        }
+    )
+
+    st.dataframe(
+        required_table,
+        use_container_width=True,
+        hide_index=True
+    )
 
     st.info(
-        "Please upload a compatible e-commerce sales CSV."
+        "💡 Please upload a compatible e-commerce sales CSV "
+        "containing the required fields above."
     )
 
     st.stop()
+
+
+# =========================================================
+# COMPATIBILITY SUCCESS
+# =========================================================
+
+st.success(
+    "✅ Dataset validated successfully — compatible with ShopSense."
+)
+
+validation_col1, validation_col2 = st.columns(2)
+
+validation_col1.metric(
+    "Required Fields Found",
+    f"{len(required_columns)}/{len(required_columns)}"
+)
+
+validation_col2.metric(
+    "Uploaded Columns",
+    f"{len(df.columns)}"
+)
 
 
 # =========================================================
@@ -347,6 +430,14 @@ with st.sidebar:
     # Date filter
     min_date = df["Order Date"].min()
     max_date = df["Order Date"].max()
+
+    if pd.isna(min_date) or pd.isna(max_date):
+
+        st.error(
+            "❌ Valid Order Date values were not found."
+        )
+
+        st.stop()
 
     date_range = st.date_input(
         "📅 Order Date",
@@ -430,12 +521,14 @@ if len(date_range) == 2:
         date_range[0]
     )
 
-    end_date = pd.Timestamp(
-        date_range[1]
-    ) + pd.Timedelta(days=1)
+    end_date = (
+        pd.Timestamp(date_range[1])
+        + pd.Timedelta(days=1)
+    )
 
     filtered_df = filtered_df[
-        (filtered_df["Order Date"] >= start_date) &
+        (filtered_df["Order Date"] >= start_date)
+        &
         (filtered_df["Order Date"] < end_date)
     ]
 

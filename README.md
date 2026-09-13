@@ -1,8 +1,12 @@
-📊 ShopSense – Advanced E-Commerce Analytics
+# 📊 ShopSense – Advanced E-Commerce Analytics
 
-ShopSense is a portfolio-grade e-commerce analytics application that converts raw sales data into actionable business insights.
+> An interactive e-commerce analytics dashboard that transforms raw sales data into actionable business insights.
 
-Users can upload a CSV file and automatically perform data cleaning, KPI analysis, sales trend analysis, customer segmentation, profitability analysis, loss-making product detection, and business recommendations without writing Python code.
+## 🚀 Live Demo
+
+👉 **[Try ShopSense Live](https://shopsense-analytics-4btj3kzuugporb6fe2hlw6.streamlit.app/)**
+
+Upload an e-commerce sales CSV and ShopSense automatically performs data cleaning, KPI analysis, customer segmentation, profitability analysis, loss-making product detection, and business recommendations.
 
 ---
 
@@ -37,6 +41,8 @@ Business Recommendations
 ### 📁 CSV Data Upload
 
 Users can upload their own e-commerce sales CSV file directly through the dashboard.
+
+ShopSense validates the uploaded dataset before running the analytics.
 
 ### 🧹 Automatic Data Cleaning
 
@@ -231,7 +237,16 @@ The goal is not simply to display charts.
 
 ShopSense turns raw e-commerce data into actionable business decisions.
 
-
+▶️ How to Run Locally
+1. Clone the Repository
+git clone https://github.com/darpanrathod077-droid/ShopSense-Analytics.git
+2. Navigate to the Project
+cd ShopSense-Analytics
+3. Install Dependencies
+pip install -r requirements.txt
+4. Run the Dashboard
+cd dashboard
+streamlit run app.py
 5. Open the Application
 
 Streamlit will provide a local URL similar to:
@@ -245,24 +260,21 @@ Open it in your browser.
 Upload a compatible e-commerce sales CSV and start exploring the dashboard.
 
 📷 Dashboard Preview
-
-Screenshots of the ShopSense dashboard will be added here.
-
 Business Overview
 
-Add dashboard screenshot here.
+Monthly Sales Trend
 
-Sales & Profit Analysis
+Category Sales vs Profit
 
-Add dashboard screenshot here.
+Regional Performance
+
+Discount vs Profit Margin
 
 Customer Segmentation
 
-Add dashboard screenshot here.
+Loss-Making Products
 
-Business Recommendations
-
-Add dashboard screenshot here.
+Automatic Business Recommendations
 
 🔮 Future Improvements
 
@@ -275,7 +287,6 @@ Automated report generation
 Downloadable business reports
 More advanced dashboard filters
 Machine learning-based customer insights
-Deployment using Streamlit Cloud
 Database integration
 👨‍💻 Project Purpose
 
@@ -292,7 +303,6 @@ SQL
 Streamlit
 Business Intelligence
 ⭐ Project Highlight
-
 ShopSense – Advanced E-Commerce Analytics
 
 Upload data → Automatically clean it → Analyze performance → Identify business problems → Generate actionable recommendations.
